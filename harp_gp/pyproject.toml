@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "harp-gp"
+version = "0.1.0"
+description = ""
+authors = ["Andrew Gushcha <andrew.gushcha@piklema.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+black = "^24.4.2"
+kivy = "^2.3.0"
+pytest = "^8.2.2"
+pyguitarpro = "^0.9.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
