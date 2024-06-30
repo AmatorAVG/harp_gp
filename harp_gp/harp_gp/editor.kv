@@ -1,0 +1,70 @@
+Root:
+
+    BoxLayout:
+        orientation: 'vertical'
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: 'Open'
+                on_release: root.show_load()
+            Button:
+                text: 'Save'
+                on_release: root.show_save()
+        BoxLayout:
+            Label:
+                id: file_lbl
+                text: 'Open gp file!'
+                opacity: 1
+        BoxLayout:
+            Button:
+                id: select_track_btn
+                text: 'Select track'
+                size_hint_y: None
+                height: 44
+                opacity: 0
+                on_release: root.show_dropdown(self)
+
+
+
+
+<LoadDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+            filters: ['*.gp?']
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+            Button:
+                text: "Open"
+                on_release: root.load(filechooser.path, filechooser.selection)
+
+<SaveDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+            on_selection: text_input.text = self.selection and self.selection[0] or ''
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+            Button:
+                text: "Save"
+                on_release: root.save(filechooser.path, text_input.text)
