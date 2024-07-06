@@ -1,5 +1,6 @@
-from guitarpro import gp5
+from guitarpro import gp5, Song, Track
 import guitarpro
+
 # from guitarpro.models import Song
 # from pyguitarpro.models.track import Track
 # from pyguitarpro.models.measure import Measure, Voice
@@ -24,12 +25,20 @@ import guitarpro
 # guitarpro.write(song, file_path)
 
 
-def get_song(file_path):
+def get_song(file_path: str) -> Song:
     song = guitarpro.parse(file_path)
     return song
 
 
-def get_tracks(song):
+def get_track(song: Song, track_name: str) -> Track | None:
+    track_number = int(track_name.split(". ")[0])
+    for track in song.tracks:
+        if track.number == track_number:
+            return track
+    return None
+
+
+def get_tracks(song: Song) -> list[Track]:
     tracks = []
     if song is None:
         return tracks

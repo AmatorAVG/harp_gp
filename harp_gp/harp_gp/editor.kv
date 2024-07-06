@@ -13,10 +13,15 @@ Root:
                 text: 'Save'
                 on_release: root.show_save()
         BoxLayout:
+            orientation: 'vertical'
             Label:
                 id: file_lbl
                 text: 'Open gp file!'
                 opacity: 1
+            Label:
+                id: track_lbl
+                text: 'Select track!'
+                opacity: 0
         BoxLayout:
             Button:
                 id: select_track_btn
