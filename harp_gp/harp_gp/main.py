@@ -6,6 +6,7 @@ from kivy.factory import Factory
 from kivy.properties import ObjectProperty
 from kivy.uix.popup import Popup
 
+from harp_gp.keys import KEYS
 from harp_gp.parser import get_song, get_tracks, get_track
 
 
@@ -13,9 +14,16 @@ class TrackDropDown(DropDown):
     def select(self, data):
         super().select(data)
         root = self.parent.children[1]
-
         root.ids.track_lbl.text = data
         root.track = get_track(root.song, data)
+
+
+class KeyDropDown(DropDown):
+    def select(self, data):
+        super().select(data)
+        root = self.parent.children[1]
+        root.key = data
+        root.ids.select_key_btn.text = 'Key: ' + data
 
 
 class LoadDialog(FloatLayout):
@@ -31,6 +39,7 @@ class SaveDialog(FloatLayout):
 
 class Root(FloatLayout):
 
+    key = 'C'
     song = None
     track = None
     tracks = []
@@ -39,12 +48,7 @@ class Root(FloatLayout):
     select_track_btn = ObjectProperty(None)
     file_lbl = ObjectProperty(None)
     track_lbl = ObjectProperty(None)
-
-    # def toggle_label(self):
-    #     if self.ids.track_select.opacity == 0:
-    #         self.ids.track_select.opacity = 1  # Показываем метку
-    #     else:
-    #         self.ids.track_select.opacity = 0  # Скрываем метку
+    new_file = ObjectProperty(None)
 
     def dismiss_popup(self):
         self._popup.dismiss()
@@ -62,9 +66,8 @@ class Root(FloatLayout):
     def load(self, path, filename):
         # with open(os.path.join(path, filename[0])) as stream:
         #     self.text_input.text = stream.read()
-        self.ids.select_track_btn.opacity = 1
+        self.ids.track_lbl.opacity = self.ids.select_track_btn.opacity = 1 if filename else 0
         self.ids.file_lbl.text = filename[0] if filename else "Open gp file!"
-        self.ids.track_lbl.opacity = 1 if filename else 0
         self.ids.track_lbl.text = "Select track!"
         self.song = get_song(filename[0]) if filename else None
         self.tracks = get_tracks(self.song)
@@ -77,7 +80,7 @@ class Root(FloatLayout):
 
         self.dismiss_popup()
 
-    def show_dropdown(self, instance):
+    def show_track_dropdown(self, instance):
         # Создаем DropDown
         dropdown = TrackDropDown()
 
@@ -91,6 +94,19 @@ class Root(FloatLayout):
         # TODO Переопределить select чтобы парсить уже конретный трек
         dropdown.open(instance)
 
+    def show_key_dropdown(self, instance):
+        # Создаем DropDown
+        dropdown = KeyDropDown()
+
+        # Добавляем кнопки в DropDown
+        for key in KEYS:
+            key_btn = Button(
+                text=key, size_hint_y=None, height=44
+            )
+            key_btn.bind(on_release=lambda btn: dropdown.select(btn.text))
+            dropdown.add_widget(key_btn)
+        # TODO Переопределить select чтобы парсить уже конретный трек
+        dropdown.open(instance)
 
 class Editor(App):
     pass

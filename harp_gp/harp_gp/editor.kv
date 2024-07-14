@@ -1,5 +1,4 @@
 Root:
-
     BoxLayout:
         orientation: 'vertical'
 
@@ -24,12 +23,19 @@ Root:
                 opacity: 0
         BoxLayout:
             Button:
+                id: select_key_btn
+                text: 'Key: C'
+                size_hint_y: None
+                height: 44
+                opacity: 1
+                on_release: root.show_key_dropdown(self)
+            Button:
                 id: select_track_btn
                 text: 'Select track'
                 size_hint_y: None
                 height: 44
                 opacity: 0
-                on_release: root.show_dropdown(self)
+                on_release: root.show_track_dropdown(self)
 
 
 
@@ -55,13 +61,22 @@ Root:
                 on_release: root.load(filechooser.path, filechooser.selection)
 
 <SaveDialog>:
+    new_file: new_file
     BoxLayout:
         size: root.size
         pos: root.pos
         orientation: "vertical"
         FileChooserListView:
             id: filechooser
-            on_selection: text_input.text = self.selection and self.selection[0] or ''
+            filters: ['*.gp?']
+            on_selection: new_file.text = self.selection and self.selection[0] or ''
+
+        TextInput:
+            id: new_file
+            size_hint_y: None
+            height: 30
+            multiline: False
+
 
         BoxLayout:
             size_hint_y: None
@@ -72,4 +87,4 @@ Root:
 
             Button:
                 text: "Save"
-                on_release: root.save(filechooser.path, text_input.text)
+                on_release: root.save(filechooser.path, new_file.text)
