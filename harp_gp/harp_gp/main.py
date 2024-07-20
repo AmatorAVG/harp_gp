@@ -66,12 +66,14 @@ class Root(FloatLayout):
     def load(self, path, filename):
         # with open(os.path.join(path, filename[0])) as stream:
         #     self.text_input.text = stream.read()
-        self.ids.track_lbl.opacity = self.ids.select_track_btn.opacity = 1 if filename else 0
-        self.ids.file_lbl.text = filename[0] if filename else "Open gp file!"
-        self.ids.track_lbl.text = "Select track!"
         self.song = get_song(filename[0]) if filename else None
-        self.tracks = get_tracks(self.song)
-
+        self.ids.file_lbl.text = filename[0] if filename else "Open gp file!"
+        self.ids.track_lbl.opacity = self.ids.select_track_btn.opacity = 1 if filename and self.song else 0
+        if self.song:
+            self.tracks = get_tracks(self.song)
+            self.ids.track_lbl.text = "Select track!"
+        elif filename:
+            self.ids.file_lbl.text = "Unsupported file!"
         self.dismiss_popup()
 
     def save(self, path, filename):

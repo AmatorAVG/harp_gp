@@ -1,4 +1,5 @@
-from guitarpro import gp5, Song, Track
+import chardet
+from guitarpro import gp5, Song, Track, GPException
 import guitarpro
 
 # from guitarpro.models import Song
@@ -25,8 +26,17 @@ import guitarpro
 # guitarpro.write(song, file_path)
 
 
-def get_song(file_path: str) -> Song:
-    song = guitarpro.parse(file_path)
+def get_song(file_path: str) -> Song | None:
+    with open(file_path, "rb") as f:
+        file_content = f.read()
+        encoding = chardet.detect(file_content)['encoding']
+    # TODO Подумать над кодировкой, возможно сделать выпадающий список еще один для ручного выбора
+    if not encoding:
+        encoding = 'cp1252'
+    try:
+        song = guitarpro.parse(file_path, encoding='UTF-8')
+    except GPException:
+        return None
     return song
 
 
