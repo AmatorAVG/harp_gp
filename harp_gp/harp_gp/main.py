@@ -7,7 +7,7 @@ from kivy.properties import ObjectProperty
 from kivy.uix.popup import Popup
 
 from harp_gp.keys import KEYS
-from harp_gp.parser import get_song, get_tracks, get_track
+from harp_gp.parser import get_song, get_tracks, get_track, write_song
 
 
 class TrackDropDown(DropDown):
@@ -64,8 +64,6 @@ class Root(FloatLayout):
         self._popup.open()
 
     def load(self, path, filename):
-        # with open(os.path.join(path, filename[0])) as stream:
-        #     self.text_input.text = stream.read()
         self.song = get_song(filename[0]) if filename else None
         self.ids.file_lbl.text = filename[0] if filename else "Open gp file!"
         self.ids.track_lbl.opacity = self.ids.select_track_btn.opacity = 1 if filename and self.song else 0
@@ -77,8 +75,8 @@ class Root(FloatLayout):
         self.dismiss_popup()
 
     def save(self, path, filename):
-        # with open(os.path.join(path, filename), 'w') as stream:
-        #     stream.write(self.text_input.text)
+        if filename:
+            write_song(self.song, self.track, filename)
 
         self.dismiss_popup()
 

@@ -2,28 +2,18 @@ import chardet
 from guitarpro import gp5, Song, Track, GPException
 import guitarpro
 
-# from guitarpro.models import Song
-# from pyguitarpro.models.track import Track
-# from pyguitarpro.models.measure import Measure, Voice
-# from guitarpro.models import Beat
-# from guitarpro.models import Note
-# from guitarpro.models import Annotation
+from harp_gp.keys import HOLES
 
-# file_path = '../../tracks/test.gp5'
-# output_file_path = 'path/to/output/file.gp5'
-#
-# song = guitarpro.parse(file_path)
-# track = song.tracks[0]
-#
-# for measure in track.measures:
-#     for voice in measure.voices:
-#         for beat in voice.beats:
-#             if beat.text:
-#                 beat.text = beat.text + '_1'
-#             for note in beat.notes:
-#                 print(note)
-#
-# guitarpro.write(song, file_path)
+
+def write_song(song: Song, track: Track, file_path: str):
+    for measure in track.measures:
+        for voice in measure.voices:
+            for beat in voice.beats:
+                # if not beat.text:
+                for note in beat.notes:
+                    beat.text = HOLES.get(note.realValue, '')
+
+    guitarpro.write(song, file_path, encoding=song.encoding)
 
 
 def get_song(file_path: str) -> Song | None:
@@ -34,9 +24,10 @@ def get_song(file_path: str) -> Song | None:
     if not encoding:
         encoding = 'cp1252'
     try:
-        song = guitarpro.parse(file_path, encoding='UTF-8')
+        song = guitarpro.parse(file_path, encoding=encoding)
     except GPException:
         return None
+    song.encoding = encoding
     return song
 
 
