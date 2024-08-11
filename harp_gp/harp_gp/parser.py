@@ -1,5 +1,5 @@
 import chardet
-from guitarpro import gp5, Song, Track, GPException
+from guitarpro import gp5, Song, Track, GPException, NoteType
 import guitarpro
 
 from harp_gp.keys import HOLES
@@ -11,7 +11,8 @@ def write_song(song: Song, track: Track, file_path: str):
             for beat in voice.beats:
                 # if not beat.text:
                 for note in beat.notes:
-                    beat.text = HOLES.get(note.realValue, '')
+                    if note.type == NoteType.normal:
+                        beat.text = HOLES.get(note.realValue, '')
 
     guitarpro.write(song, file_path, encoding=song.encoding)
 
