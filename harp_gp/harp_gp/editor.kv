@@ -30,6 +30,13 @@ Root:
                 opacity: 1
                 on_release: root.show_key_dropdown(self)
             Button:
+                id: select_tuning_btn
+                text: 'Tuning: Standard Richter'
+                size_hint_y: None
+                height: 44
+                opacity: 1
+                on_release: root.show_tuning_dropdown(self)
+            Button:
                 id: select_track_btn
                 text: 'Select track'
                 size_hint_y: None

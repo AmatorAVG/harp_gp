@@ -6,7 +6,7 @@ from kivy.factory import Factory
 from kivy.properties import ObjectProperty
 from kivy.uix.popup import Popup
 
-from harp_gp.keys import KEYS
+from harp_gp.keys import KEYS, TUNINGS
 from harp_gp.parser import get_song, get_tracks, get_track, write_song
 
 
@@ -23,7 +23,15 @@ class KeyDropDown(DropDown):
         super().select(data)
         root = self.parent.children[1]
         root.key = data
-        root.ids.select_key_btn.text = 'Key: ' + data
+        root.ids.select_key_btn.text = "Key: " + data
+
+
+class TuningDropDown(DropDown):
+    def select(self, data):
+        super().select(data)
+        root = self.parent.children[1]
+        root.tuning = data
+        root.ids.select_tuning_btn.text = "Tuning: " + data
 
 
 class LoadDialog(FloatLayout):
@@ -39,7 +47,8 @@ class SaveDialog(FloatLayout):
 
 class Root(FloatLayout):
 
-    key = 'C'
+    key = "C"
+    tuning = "Standard Richter"
     song = None
     track = None
     tracks = []
@@ -66,7 +75,9 @@ class Root(FloatLayout):
     def load(self, path, filename):
         self.song = get_song(filename[0]) if filename else None
         self.ids.file_lbl.text = filename[0] if filename else "Open gp file!"
-        self.ids.track_lbl.opacity = self.ids.select_track_btn.opacity = 1 if filename and self.song else 0
+        self.ids.track_lbl.opacity = self.ids.select_track_btn.opacity = (
+            1 if filename and self.song else 0
+        )
         if self.song:
             self.tracks = get_tracks(self.song)
             self.ids.track_lbl.text = "Select track!"
@@ -76,7 +87,7 @@ class Root(FloatLayout):
 
     def save(self, path, filename):
         if filename:
-            write_song(self.song, self.track, filename)
+            write_song(self.song, self.track, self.key, self.tuning, filename)
 
         self.dismiss_popup()
 
@@ -95,18 +106,21 @@ class Root(FloatLayout):
         dropdown.open(instance)
 
     def show_key_dropdown(self, instance):
-        # Создаем DropDown
         dropdown = KeyDropDown()
-
-        # Добавляем кнопки в DropDown
         for key in KEYS:
-            key_btn = Button(
-                text=key, size_hint_y=None, height=44
-            )
+            key_btn = Button(text=key, size_hint_y=None, height=44)
             key_btn.bind(on_release=lambda btn: dropdown.select(btn.text))
             dropdown.add_widget(key_btn)
-        # TODO Переопределить select чтобы парсить уже конретный трек
         dropdown.open(instance)
+
+    def show_tuning_dropdown(self, instance):
+        dropdown = TuningDropDown()
+        for tuning in TUNINGS:
+            tuning_btn = Button(text=tuning, size_hint_y=None, height=44)
+            tuning_btn.bind(on_release=lambda btn: dropdown.select(btn.text))
+            dropdown.add_widget(tuning_btn)
+        dropdown.open(instance)
+
 
 class Editor(App):
     pass
