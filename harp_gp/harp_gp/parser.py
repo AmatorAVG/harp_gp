@@ -19,7 +19,7 @@ def sort_expression(expression):
 
     # Сортируем элементы по абсолютной величине
     sorted_elements = sorted(
-        elements, key=lambda x: abs(int(x.replace("+", "").replace("-", "")))
+        elements, key=lambda x: abs(int(x.replace("+", "").replace("-", "").replace("'", "").replace("o", "")))
     )
 
     # Возвращаем отсортированную строку
